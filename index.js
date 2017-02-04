@@ -1,5 +1,8 @@
 var restify = require('restify');
 var builder = require('botbuilder');
+var productSearchDialog = require('./app/productSearch');
+var viewCartDialog = require('./app/viewCart');
+var checkoutDialog = require('./app/checkout');
 
 //=========================================================
 // Bot Setup
@@ -23,6 +26,35 @@ server.post('/api/messages', connector.listen());
 // Bots Dialogs
 //=========================================================
 
-bot.dialog('/', function (session) {
-    session.send("Hello World");
-});
+// TODO:
+//  Greeting
+//  Bot Help: what can this bot do?
+
+// Main menu
+bot.dialog('/', [
+    function (session, args, next) {
+        builder.Prompts.choice(session, "Welcome to BotCommerce! What would you like to do?", ["Search for products", "View cart", "Checkout"])
+    },
+    function (session, args, next) {
+        switch(args.response.index) {
+            case 0:
+                // Initiate "Search for products" dialog
+                session.send("Search for products")
+                productSearchDialog(bot)
+                session.beginDialog('/productSearch')
+                break
+            case 1:
+                // Initiate "View Cart" dialog
+                session.send("View cart")
+                viewCartDialog(bot)
+                session.beginDialog('/viewCart')
+                break
+            case 2:
+                // Initiate "Checkout" dialog
+                session.send("Checkout")
+                checkoutDialog(bot)
+                session.beginDialog('/checkout')
+                break
+        }
+    }
+]);
