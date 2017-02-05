@@ -9,6 +9,25 @@ const checkoutDialog = require('./app/checkout')
 // Bot Setup
 // =========================================================
 
+var Connection = require('tedious').Connection
+var config = {
+  userName: process.env.SQL_USERNAME,
+  password: process.env.SQL_PASSWORD,
+  server: process.env.SQL_SERVER,
+  // If you are on Microsoft Azure, you need this:
+  options: {encrypt: true, database: process.env.SQL_DBNAME}
+}
+
+var connection = new Connection(config)
+
+connection.on('connect', (err) => {
+  if (err) {
+    console.log(err.stack)
+  }
+// If no error, then good to proceed.
+  console.log('Connected')
+})
+
 // Setup Restify Server
 var server = restify.createServer()
 server.listen(process.env.port || process.env.PORT || 3978, function () {
