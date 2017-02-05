@@ -9,6 +9,25 @@ const checkoutDialog = require('./app/checkout')
 // Bot Setup
 // =========================================================
 
+var Connection = require('tedious').Connection
+var config = {
+  userName: process.env.SQL_USERNAME,
+  password: process.env.SQL_PASSWORD,
+  server: process.env.SQL_SERVER,
+  // If you are on Microsoft Azure, you need this:
+  options: {encrypt: true, database: process.env.SQL_DBNAME}
+}
+
+var connection = new Connection(config)
+
+connection.on('connect', (err) => {
+  if (err) {
+    console.log(err.stack)
+  }
+// If no error, then good to proceed.
+  console.log('Connected')
+})
+
 // Setup Restify Server
 var server = restify.createServer()
 server.listen(process.env.port || process.env.PORT || 3978, function () {
@@ -30,30 +49,31 @@ server.post('/api/messages', connector.listen())
 // TODO:
 //  Greeting
 //  Bot Help: what can this bot do?
+productSearchDialog(bot, connection)
+viewCartDialog(bot, connection)
+checkoutDialog(bot, connection)
 
 // Main menu
 bot.dialog('/', [
   function (session, args, next) {
-    builder.Prompts.choice(session, 'Welcome to BotCommerce! What would you like to do?', ['Search for products', 'View cart', 'Checkout'])
+    const message = session.userData.name ? `Hi ${session.userData.name}! ` : 'Welcome to BotCommerce!'
+    builder.Prompts.choice(session, message + ' What would you like to do?', ['Search for products', 'View cart', 'Checkout'])
   },
   function (session, args, next) {
     switch (args.response.index) {
       case 0:
         // Initiate "Search for products" dialog
         session.send('Search for products')
-        productSearchDialog(bot)
         session.beginDialog('/productSearch')
         break
       case 1:
         // Initiate "View Cart" dialog
         session.send('View cart')
-        viewCartDialog(bot)
         session.beginDialog('/viewCart')
         break
       case 2:
         // Initiate "Checkout" dialog
         session.send('Checkout')
-        checkoutDialog(bot)
         session.beginDialog('/checkout')
         break
     }
