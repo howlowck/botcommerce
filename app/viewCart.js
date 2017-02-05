@@ -31,7 +31,7 @@ module.exports = function (bot, db) {
 
         session.send(`Hi ${firstName} ${lastName}`)
         session.userData.name = firstName + ' ' + lastName
-      
+
         session.endDialog()
       })
 
