@@ -1,8 +1,9 @@
-var restify = require('restify')
-var builder = require('botbuilder')
-var productSearchDialog = require('./app/productSearch')
-var viewCartDialog = require('./app/viewCart')
-var checkoutDialog = require('./app/checkout')
+require('dotenv').config()
+const restify = require('restify')
+const builder = require('botbuilder')
+const productSearchDialog = require('./app/productSearch')
+const viewCartDialog = require('./app/viewCart')
+const checkoutDialog = require('./app/checkout')
 
 // =========================================================
 // Bot Setup
