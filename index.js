@@ -44,13 +44,13 @@ bot.dialog('/', [
         session.beginDialog('/productSearch')
         break
       case 1:
-            // Initiate "View Cart" dialog
+        // Initiate "View Cart" dialog
         session.send('View cart')
         viewCartDialog(bot)
         session.beginDialog('/viewCart')
         break
       case 2:
-            // Initiate "Checkout" dialog
+        // Initiate "Checkout" dialog
         session.send('Checkout')
         checkoutDialog(bot)
         session.beginDialog('/checkout')
