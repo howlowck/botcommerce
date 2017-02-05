@@ -60,19 +60,19 @@ bot.dialog('/', [
       case 0:
         // Initiate "Search for products" dialog
         session.send('Search for products')
-        productSearchDialog(bot)
+        productSearchDialog(bot, connection)
         session.beginDialog('/productSearch')
         break
       case 1:
         // Initiate "View Cart" dialog
         session.send('View cart')
-        viewCartDialog(bot)
+        viewCartDialog(bot, connection)
         session.beginDialog('/viewCart')
         break
       case 2:
         // Initiate "Checkout" dialog
         session.send('Checkout')
-        checkoutDialog(bot)
+        checkoutDialog(bot, connection)
         session.beginDialog('/checkout')
         break
     }
