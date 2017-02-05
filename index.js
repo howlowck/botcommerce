@@ -43,10 +43,10 @@ var bot = new builder.UniversalBot(connector)
 server.post('/api/messages', connector.listen())
 
 // Create LUIS recognizer that points at our model and add it as the root '/' dialog for our Cortana Bot.
-var model = 'https://westus.api.cognitive.microsoft.com/luis/v2.0/apps/7182db75-b755-45d0-bf6c-5f3b8b1edcd7?subscription-key=' + process.env.LUIS_KEY + '&verbose=true';
-var recognizer = new builder.LuisRecognizer(model);
-var dialog = new builder.IntentDialog({ recognizers: [recognizer] });
-bot.dialog('/', dialog);
+var model = 'https://westus.api.cognitive.microsoft.com/luis/v2.0/apps/7182db75-b755-45d0-bf6c-5f3b8b1edcd7?subscription-key=' + process.env.LUIS_KEY + '&verbose=true'
+var recognizer = new builder.LuisRecognizer(model)
+var dialog = new builder.IntentDialog({ recognizers: [recognizer] })
+bot.dialog('/', dialog)
 
 // =========================================================
 // Bots Dialogs
@@ -57,35 +57,35 @@ viewCartDialog(bot, connection)
 checkoutDialog(bot, connection)
 
 dialog.matches('greeting', [
-    function (session, args, next) {
-        session.send('Welcome to BotCommerce!')
-        session.beginDialog('/mainMenu')
-    }
+  function (session, args, next) {
+    session.send('Welcome to BotCommerce!')
+    session.beginDialog('/mainMenu')
+  }
 ])
 
 dialog.matches('productSearch', [
-    function (session, args, next) {
-        session.beginDialog('/productSearch')
-    }
+  function (session, args, next) {
+    session.beginDialog('/productSearch')
+  }
 ])
 
 dialog.matches('viewCart', [
-    function (session, args, next) {
-        session.beginDialog('/viewCart')
-    }
+  function (session, args, next) {
+    session.beginDialog('/viewCart')
+  }
 ])
 
 dialog.matches('checkout', [
-    function (session, args, next) {
-        session.beginDialog('/checkout')
-    }
+  function (session, args, next) {
+    session.beginDialog('/checkout')
+  }
 ])
 
 dialog.matches('None', [
-    function (session, args, next) {
-        session.send('I\'m sorry, I didn\'t understand..')
-        session.beginDialog('/mainMenu')
-    }
+  function (session, args, next) {
+    session.send('I\'m sorry, I didn\'t understand..')
+    session.beginDialog('/mainMenu')
+  }
 ])
 
 // Main menu

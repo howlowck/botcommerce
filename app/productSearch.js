@@ -1,4 +1,5 @@
 const builder = require('botbuilder')
+const searchService = require('./services/searchService')
 
 const extractEntities = (session, args) => {
   var foundEntities = []
@@ -34,7 +35,8 @@ module.exports = function (bot) {
       if (entities) {
         // Call Azure Search API
         // Display cards
-        session.send('You want to ')
+        searchService.search(entities[0], entities[1])
+        session.send('You want to search for %j' + entities)
       } else {
         builder.Prompts.text('What product would you like to search for?')
       }
@@ -43,6 +45,8 @@ module.exports = function (bot) {
       var product = args.response
 
       session.send('You want to search for ' + product)
+      searchService.search(product, null)
+
       session.endDialog()
     }
   ])
