@@ -52,8 +52,9 @@ bot.dialog('/', dialog);
 // Bots Dialogs
 // =========================================================
 
-// TODO:
-//  Bot Help: what can this bot do?
+productSearchDialog(bot, connection)
+viewCartDialog(bot, connection)
+checkoutDialog(bot, connection)
 
 dialog.matches('greeting', [
     function (session, args, next) {
@@ -64,19 +65,19 @@ dialog.matches('greeting', [
 
 dialog.matches('productSearch', [
     function (session, args, next) {
-        session.send('LUIS -> productSearch')
+        session.beginDialog('/productSearch')
     }
 ])
 
 dialog.matches('viewCart', [
     function (session, args, next) {
-        session.send('LUIS -> viewCart')
+        session.beginDialog('/viewCart')
     }
 ])
 
 dialog.matches('checkout', [
     function (session, args, next) {
-        session.send('LUIS -> checkout')
+        session.beginDialog('/checkout')
     }
 ])
 
@@ -90,26 +91,24 @@ dialog.matches('None', [
 // Main menu
 bot.dialog('/mainMenu', [
   function (session, args, next) {
-    builder.Prompts.choice(session, 'What would you like to do?', ['Search for products', 'View cart', 'Checkout'])
+    const message = session.userData.name ? `Hi ${session.userData.name}! ` : 'Welcome to BotCommerce!'
+    builder.Prompts.choice(session, message + ' What would you like to do?', ['Search for products', 'View cart', 'Checkout'])
   },
   function (session, args, next) {
     switch (args.response.index) {
       case 0:
         // Initiate "Search for products" dialog
         session.send('Search for products')
-        productSearchDialog(bot, connection)
         session.beginDialog('/productSearch')
         break
       case 1:
         // Initiate "View Cart" dialog
         session.send('View cart')
-        viewCartDialog(bot, connection)
         session.beginDialog('/viewCart')
         break
       case 2:
         // Initiate "Checkout" dialog
         session.send('Checkout')
-        checkoutDialog(bot, connection)
         session.beginDialog('/checkout')
         break
     }
