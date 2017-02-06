@@ -1,4 +1,4 @@
-const searchService = require('./services/searchService')
+const searchService = require('../services/searchService')
 
 module.exports = function (bot) {
   bot.dialog('/productSearch', [
