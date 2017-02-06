@@ -1,46 +1,43 @@
-const builder = require('botbuilder')
+// const builder = require('botbuilder')
 const Request = require('tedious').Request
+
+// query SQL dbo.Customers to get user's full name
+function getCart (session, bot, db, next) {
+  // instantiate cart as empty array
+  session.userData.cart = []
+  // find user by skypeId
+  const skypeId = session.message.address.user.id
+  console.log('skypeId: ', skypeId)
+  const nameRequest = new Request(`SELECT * FROM dbo.Customers as c WHERE c.skypeId = '${skypeId}';`, function (err, rowCount, rows) {
+    if (err) {
+      console.log(err.stack)
+    }
+    var columns = rows[0]
+    console.log('columns', columns)
+    columns.forEach((column) => {
+      if (column.metadata.colName === 'id') {
+        session.userData.user.id = column.value
+      }
+    })
+
+    // store user's name in userData
+    next({name: session.userData.name})
+    session.endDialog()
+  })
+
+  db.execSql(nameRequest)
+}
 
 module.exports = function (bot, db) {
   bot.dialog('/viewCart', [
-    (session) => {
-      builder.Prompts.text(session, 'Hi! What is your name?')
-    },
-    (session, results) => {
-      const firstName = results.response
-      const nameRequest = new Request(`SELECT * FROM dbo.Customers as c WHERE c.firstName = '${firstName}';`, function (err, rowCount) {
-        if (err) {
-          console.log(err)
-        } else {
-          console.log(rowCount + ' rows')
-        }
-      })
-
-      nameRequest.on('row', function (columns) {
-        let firstName = ''
-        let lastName = ''
-
-        columns.forEach((column) => {
-          if (column.metadata.colName === 'firstName') {
-            firstName = column.value
-          }
-          if (column.metadata.colName === 'lastName') {
-            lastName = column.value
-          }
-        })
-
-        session.send(`Hi ${firstName} ${lastName}`)
-        session.userData.name = firstName + ' ' + lastName
-
-        session.endDialog()
-      })
-
-      db.execSql(nameRequest)
-      // session.userData.name = results.response
-      // session.endDialog()
-    },
     (session, args, next) => {
-      session.endDialog('VIEWCART DIALOG! YAY')
+      if (!session.userData.name) {
+        // get user name
+        getCart(session, bot, db, next)
+      }
+    },
+    (session, payload, next) => {
+      session.send(`hey! ${payload.name} !!`)
     }
   ])
 }

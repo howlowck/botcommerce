@@ -15,7 +15,7 @@ var config = {
   password: process.env.SQL_PASSWORD,
   server: process.env.SQL_SERVER,
   // If you are on Microsoft Azure, you need this:
-  options: {encrypt: true, database: process.env.SQL_DBNAME}
+  options: {encrypt: true, database: process.env.SQL_DBNAME, rowCollectionOnRequestCompletion: true}
 }
 
 var connection = new Connection(config)
