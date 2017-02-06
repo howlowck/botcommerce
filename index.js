@@ -1,9 +1,9 @@
 require('dotenv').config()
 const restify = require('restify')
 const builder = require('botbuilder')
-const productSearchDialog = require('./app/productSearch')
-const viewCartDialog = require('./app/viewCart')
-const checkoutDialog = require('./app/checkout')
+const productSearchDialog = require('./app/dialogs/productSearch')
+const viewCartDialog = require('./app/dialogs/viewCart')
+const checkoutDialog = require('./app/dialogs/checkout')
 
 // =========================================================
 // Bot Setup
