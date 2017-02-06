@@ -2,7 +2,7 @@
 const Request = require('tedious').Request
 
 // query SQL dbo.Customers to get user's full name
-function getName (session, bot, db) {
+function getCart (session, bot, db, next) {
   // instantiate cart as empty array
   session.userData.cart = []
   // find user by skypeId
@@ -14,36 +14,30 @@ function getName (session, bot, db) {
     }
     var columns = rows[0]
     console.log('columns', columns)
-    let firstName = ''
-    let lastName = ''
-
     columns.forEach((column) => {
-      if (column.metadata.colName === 'firstName') {
-        firstName = column.value
-      }
-      if (column.metadata.colName === 'lastName') {
-        lastName = column.value
+      if (column.metadata.colName === 'id') {
+        session.userData.user.id = column.value
       }
     })
 
-    // // store user's name in userData
-    session.userData.name = firstName + ' ' + lastName
+    // store user's name in userData
+    next({name: session.userData.name})
     session.endDialog()
   })
-  console.log('called before sql execute')
-  // search each column in row for name info
 
   db.execSql(nameRequest)
 }
 
 module.exports = function (bot, db) {
   bot.dialog('/viewCart', [
-    (session) => {
+    (session, args, next) => {
       if (!session.userData.name) {
         // get user name
-        getName(session, bot, db)
-        console.log('dialog! ', session.userData.name)
+        getCart(session, bot, db, next)
       }
+    },
+    (session, payload, next) => {
+      session.send(`hey! ${payload.name} !!`)
     }
   ])
 }
