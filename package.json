@@ -13,6 +13,7 @@
   "dependencies": {
     "botbuilder": "^3.6.0",
     "dotenv": "^4.0.0",
+    "humanname": "^0.2.2",
     "node-fetch": "^1.6.3",
     "restify": "^4.3.0",
     "tedious": "^1.14.0"
