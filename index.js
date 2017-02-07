@@ -4,6 +4,7 @@ const builder = require('botbuilder')
 const productSearchDialog = require('./app/dialogs/productSearch')
 const viewCartDialog = require('./app/dialogs/viewCart')
 const checkoutDialog = require('./app/dialogs/checkout')
+const getCustomer = require('./app/services/getCustomer')
 
 // =========================================================
 // Bot Setup
@@ -58,6 +59,10 @@ checkoutDialog(bot, connection)
 
 dialog.matches('greeting', [
   function (session, args, next) {
+    getCustomer(session, args, connection, next)
+
+  },
+  function (session, args, next) {
     session.send('Welcome to BotCommerce!')
     session.beginDialog('/mainMenu')
   }
@@ -65,23 +70,35 @@ dialog.matches('greeting', [
 
 dialog.matches('productSearch', [
   function (session, args, next) {
+    getCustomer(session, args, connection, next)
+  },
+  function (session, args, next) {
     session.beginDialog('/productSearch')
   }
 ])
 
 dialog.matches('viewCart', [
   function (session, args, next) {
+    getCustomer(session, args, connection, next)
+  },
+  function (session, args) {
     session.beginDialog('/viewCart')
   }
 ])
 
 dialog.matches('checkout', [
   function (session, args, next) {
+    getCustomer(session, args, connection, next)
+  },
+  function (session, args, next) {
     session.beginDialog('/checkout')
   }
 ])
 
 dialog.matches('None', [
+  function (session, args, next) {
+    getCustomer(session, args, connection, next)
+  },
   function (session, args, next) {
     session.send('I\'m sorry, I didn\'t understand..')
     session.beginDialog('/mainMenu')
