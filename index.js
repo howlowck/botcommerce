@@ -60,7 +60,6 @@ checkoutDialog(bot, connection)
 dialog.matches('greeting', [
   function (session, args, next) {
     getCustomer(session, args, connection, next)
-
   },
   function (session, args, next) {
     session.send('Welcome to BotCommerce!')
@@ -108,7 +107,7 @@ dialog.matches('None', [
 // Main menu
 bot.dialog('/mainMenu', [
   function (session, args, next) {
-    const message = session.userData.name ? `Hi ${session.userData.name}! ` : 'Welcome to BotCommerce!'
+    const message = session.message.address.user.name ? `Hi ${session.message.address.user.name}! ` : 'Welcome to BotCommerce!'
     builder.Prompts.choice(session, message + ' What would you like to do?', ['Search for products', 'View cart', 'Checkout'])
   },
   function (session, args, next) {
