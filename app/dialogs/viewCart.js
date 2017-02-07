@@ -7,7 +7,7 @@ function getCart (session, db, next) {
   // instantiate cart as empty array
   session.userData.cart = []
   // find user by skypeId
-  const userId = session.userData.userId ? session.userData.userId : 2
+  const userId = session.userData.userId
   const sql = `select c.quantity, p.price, p.name, p.category, p.description, p.image from dbo.Carts as c left join dbo.Products as p on c.productId = p.id where c.customerId = ${userId}`
   const productsRequest = new Request(sql, function (err, rowCount, rows) {
     if (err) {
