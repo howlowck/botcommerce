@@ -10,11 +10,12 @@ module.exports = {
       queryString += `&$filter=Color eq '${color}'`
     }
     var searchEndpoint = `https://botcommercev2.search.windows.net/indexes/product/docs?${queryString}&api-version=2016-09-01&api-key=${queryKey}`
-    fetch(searchEndpoint)
+    const searchRequest = fetch(searchEndpoint)
       .then(function (res) {
         return res.json()
       }).then(function (json) {
-        console.log(json)
+        return json.value
       })
+    return searchRequest
   }
 }

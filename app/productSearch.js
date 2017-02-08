@@ -8,6 +8,7 @@ const extractEntities = (session, args) => {
   var product = builder.EntityRecognizer.findEntity(args.entities, 'productName')
   var color = builder.EntityRecognizer.findEntity(args.entities, 'color')
 
+  // check for null values
   if (product) {
     // We found a product entity
     foundEntities.push(product.entity)
@@ -30,27 +31,34 @@ const extractEntities = (session, args) => {
 module.exports = function (bot) {
   bot.dialog('/productSearch', [
     function (session, args, next) {
-      // console.log(JSON.stringify(session, null, 4))
-      // console.log(JSON.stringify(args, null, 4))
-
+      // find LUIS entities and load into array
       var entities = extractEntities(session, args)
 
       if (entities) {
         // Call Azure Search API
         // Display cards
-        searchService.search(entities[0], entities[1])
-        session.send('You want to search for %j' + entities)
+        const searchResult = searchService.search(entities[0], entities[1])
+        session.send(`You want to search for a ${entities[1]} ${entities[0]}`)
+        searchResult.then((productsFound) => {
+          console.log('productsFound: ', productsFound)
+          // display results function(productsFound)
+          // Broken
+          session.endDialog()
+        })
       } else {
+        // entities are undefined.. prompt for a product
         builder.Prompts.text('What product would you like to search for?')
+        var product = args.response
+
+        session.send(`You want to search for ${product}`)
+        const searchRequest2 = searchService.search(product, null)
+        searchRequest2.then((productsFound) => {
+          console.log('productsFound: ', productsFound)
+          // display results function(productsFound)
+          // Broken
+          session.endDialog()
+        })
       }
-    },
-    function (session, args, next) {
-      var product = args.response
-
-      session.send('You want to search for ' + product)
-      searchService.search(product, null)
-
-      session.endDialog()
     }
   ])
 }
