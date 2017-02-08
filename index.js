@@ -65,19 +65,19 @@ dialog.matches('greeting', [
 
 dialog.matches('productSearch', [
   function (session, args, next) {
-    session.beginDialog('/productSearch')
+    session.beginDialog('/productSearch', args)
   }
 ])
 
 dialog.matches('viewCart', [
   function (session, args, next) {
-    session.beginDialog('/viewCart')
+    session.beginDialog('/viewCart', args)
   }
 ])
 
 dialog.matches('checkout', [
   function (session, args, next) {
-    session.beginDialog('/checkout')
+    session.beginDialog('/checkout', args)
   }
 ])
 
@@ -99,17 +99,17 @@ bot.dialog('/mainMenu', [
       case 0:
         // Initiate "Search for products" dialog
         session.send('Search for products')
-        session.beginDialog('/productSearch')
+        session.beginDialog('/productSearch', args)
         break
       case 1:
         // Initiate "View Cart" dialog
         session.send('View cart')
-        session.beginDialog('/viewCart')
+        session.beginDialog('/viewCart', args)
         break
       case 2:
         // Initiate "Checkout" dialog
         session.send('Checkout')
-        session.beginDialog('/checkout')
+        session.beginDialog('/checkout', args)
         break
     }
   }

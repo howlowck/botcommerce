@@ -10,11 +10,11 @@ const extractEntities = (session, args) => {
 
   if (product) {
     // We found a product entity
-    foundEntities.push(product)
+    foundEntities.push(product.entity)
 
     if (color) {
       // We found a color entity
-      foundEntities.push(color)
+      foundEntities.push(color.entity)
     } else {
       // If no color was found, send null
       foundEntities.push(null)
@@ -30,6 +30,9 @@ const extractEntities = (session, args) => {
 module.exports = function (bot) {
   bot.dialog('/productSearch', [
     function (session, args, next) {
+      // console.log(JSON.stringify(session, null, 4))
+      // console.log(JSON.stringify(args, null, 4))
+
       var entities = extractEntities(session, args)
 
       if (entities) {
