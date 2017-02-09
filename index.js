@@ -1,9 +1,10 @@
 require('dotenv').config()
 const restify = require('restify')
 const builder = require('botbuilder')
-const productSearchDialog = require('./app/productSearch')
-const viewCartDialog = require('./app/viewCart')
-const checkoutDialog = require('./app/checkout')
+const productSearchDialog = require('./app/dialogs/productSearch')
+const viewCartDialog = require('./app/dialogs/viewCart')
+const checkoutDialog = require('./app/dialogs/checkout')
+const getCustomer = require('./app/services/getCustomer')
 const addToCart = require('./app//dialogs/addToCart')
 
 // =========================================================
@@ -16,7 +17,7 @@ var config = {
   password: process.env.SQL_PASSWORD,
   server: process.env.SQL_SERVER,
   // If you are on Microsoft Azure, you need this:
-  options: {encrypt: true, database: process.env.SQL_DBNAME}
+  options: {encrypt: true, database: process.env.SQL_DBNAME, rowCollectionOnRequestCompletion: true}
 }
 
 var connection = new Connection(config)
@@ -60,6 +61,9 @@ addToCart(bot, connection)
 
 dialog.matches('greeting', [
   function (session, args, next) {
+    getCustomer(session, args, connection, next)
+  },
+  function (session, args, next) {
     session.send('Welcome to BotCommerce!')
     session.beginDialog('/mainMenu')
   }
@@ -67,23 +71,36 @@ dialog.matches('greeting', [
 
 dialog.matches('productSearch', [
   function (session, args, next) {
-    session.beginDialog('/productSearch', args)
+    getCustomer(session, args, connection, next)
+
+  },
+  function (session, args, next) {
+    session.beginDialog('/productSearch')
   }
 ])
 
 dialog.matches('viewCart', [
   function (session, args, next) {
-    session.beginDialog('/viewCart', args)
+    getCustomer(session, args, connection, next)
+  },
+  function (session, args) {
+    session.beginDialog('/viewCart')
   }
 ])
 
 dialog.matches('checkout', [
   function (session, args, next) {
-    session.beginDialog('/checkout', args)
+    getCustomer(session, args, connection, next)
+  },
+  function (session, args, next) {
+    session.beginDialog('/checkout')
   }
 ])
 
 dialog.matches('None', [
+  function (session, args, next) {
+    getCustomer(session, args, connection, next)
+  },
   function (session, args, next) {
     session.send('I\'m sorry, I didn\'t understand..')
     session.beginDialog('/mainMenu')
@@ -93,7 +110,7 @@ dialog.matches('None', [
 // Main menu
 bot.dialog('/mainMenu', [
   function (session, args, next) {
-    const message = session.userData.name ? `Hi ${session.userData.name}! ` : 'Welcome to BotCommerce!'
+    const message = session.message.address.user.name ? `Hi ${session.message.address.user.name}! ` : 'Welcome to BotCommerce!'
     builder.Prompts.choice(session, message + ' What would you like to do?', ['Search for products', 'View cart', 'Checkout'])
   },
   function (session, args, next) {

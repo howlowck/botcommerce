@@ -1,5 +1,5 @@
 const builder = require('botbuilder')
-const searchService = require('./services/searchService')
+const searchService = require('../services/searchService')
 
 const extractEntities = (session, args) => {
   var foundEntities = []
