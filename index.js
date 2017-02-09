@@ -5,6 +5,7 @@ const productSearchDialog = require('./app/dialogs/productSearch')
 const viewCartDialog = require('./app/dialogs/viewCart')
 const checkoutDialog = require('./app/dialogs/checkout')
 const getCustomer = require('./app/services/getCustomer')
+const addToCart = require('./app//dialogs/addToCart')
 
 // =========================================================
 // Bot Setup
@@ -56,6 +57,7 @@ bot.dialog('/', dialog)
 productSearchDialog(bot, connection)
 viewCartDialog(bot, connection)
 checkoutDialog(bot, connection)
+addToCart(bot, connection)
 
 dialog.matches('greeting', [
   function (session, args, next) {
@@ -70,6 +72,7 @@ dialog.matches('greeting', [
 dialog.matches('productSearch', [
   function (session, args, next) {
     getCustomer(session, args, connection, next)
+
   },
   function (session, args, next) {
     session.beginDialog('/productSearch')
@@ -115,17 +118,17 @@ bot.dialog('/mainMenu', [
       case 0:
         // Initiate "Search for products" dialog
         session.send('Search for products')
-        session.beginDialog('/productSearch')
+        session.beginDialog('/productSearch', args)
         break
       case 1:
         // Initiate "View Cart" dialog
         session.send('View cart')
-        session.beginDialog('/viewCart')
+        session.beginDialog('/viewCart', args)
         break
       case 2:
         // Initiate "Checkout" dialog
         session.send('Checkout')
-        session.beginDialog('/checkout')
+        session.beginDialog('/checkout', args)
         break
     }
   }

@@ -56,7 +56,4 @@ function getCustomer (session, args, connection, next) {
   connection.execSql(nameRequest)
 }
 
-module.exports = function (session, args, connection, next) {
-  // check if user is in dbo.Customers
-  getCustomer(session, args, connection, next)
-}
+module.exports = getCustomer
