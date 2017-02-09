@@ -5,7 +5,7 @@ var queryKey = process.env.AZURE_SEARCH_QUERY_KEY
 module.exports = {
   search: function search (productName, color) {
     var queryString = `search=${productName}`
-    if (color !== null || color !== '') {
+    if (color) {
       color = color[0].toUpperCase() + color.slice(1)
       queryString += `&$filter=Color eq '${color}'`
     }

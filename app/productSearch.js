@@ -33,32 +33,33 @@ module.exports = function (bot) {
     function (session, args, next) {
       // find LUIS entities and load into array
       var entities = extractEntities(session, args)
-
       if (entities) {
+        console.log('entities: ', entities[0], entities[1])
         // Call Azure Search API
-        // Display cards
         const searchResult = searchService.search(entities[0], entities[1])
         session.send(`You want to search for a ${entities[1]} ${entities[0]}`)
         searchResult.then((productsFound) => {
           console.log('productsFound: ', productsFound)
-          // display results function(productsFound)
-          // Broken
+          // Display cards
+          session.beginDialog('/addToCart', session, productsFound, next)
           session.endDialog()
         })
       } else {
+        console.log('entities: ', entities)
         // entities are undefined.. prompt for a product
-        builder.Prompts.text('What product would you like to search for?')
-        var product = args.response
-
-        session.send(`You want to search for ${product}`)
-        const searchRequest2 = searchService.search(product, null)
-        searchRequest2.then((productsFound) => {
-          console.log('productsFound: ', productsFound)
-          // display results function(productsFound)
-          // Broken
-          session.endDialog()
-        })
+        builder.Prompts.text(session, 'What product would you like to search for?')
       }
+    },
+    function (session, args, next) {
+      var product = args.response
+      session.send(`You want to search for ${product}`)
+      const searchRequest2 = searchService.search(product, null)
+      searchRequest2.then(productsFound => {
+        console.log('productsFound: ', productsFound)
+        // Display cards
+        session.beginDialog('/addToCart', session, productsFound, next)
+        session.endDialog()
+      })
     }
   ])
 }

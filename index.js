@@ -4,6 +4,7 @@ const builder = require('botbuilder')
 const productSearchDialog = require('./app/productSearch')
 const viewCartDialog = require('./app/viewCart')
 const checkoutDialog = require('./app/checkout')
+const addToCart = require('./app//dialogs/addToCart')
 
 // =========================================================
 // Bot Setup
@@ -55,6 +56,7 @@ bot.dialog('/', dialog)
 productSearchDialog(bot, connection)
 viewCartDialog(bot, connection)
 checkoutDialog(bot, connection)
+addToCart(bot, connection)
 
 dialog.matches('greeting', [
   function (session, args, next) {
