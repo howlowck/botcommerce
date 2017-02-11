@@ -48,7 +48,8 @@ function getCustomer (session, args, connection, next) {
         if (column.metadata.colName === 'id') {
           session.userData.userId = column.value
           console.log('customerId: ', session.userData.userId)
-          next()
+          console.log(args)
+          next(args)
         }
       })
     }

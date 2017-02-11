@@ -5,7 +5,7 @@ const productSearchDialog = require('./app/dialogs/productSearch')
 const viewCartDialog = require('./app/dialogs/viewCart')
 const checkoutDialog = require('./app/dialogs/checkout')
 const getCustomer = require('./app/services/getCustomer')
-const addToCart = require('./app//dialogs/addToCart')
+const addToCart = require('./app/dialogs/addToCart')
 
 // =========================================================
 // Bot Setup
@@ -61,54 +61,41 @@ addToCart(bot, connection)
 
 dialog.matches('greeting', [
   function (session, args, next) {
-    getCustomer(session, args, connection, next)
-  },
-  function (session, args, next) {
     session.send('Welcome to BotCommerce!')
-    session.beginDialog('/mainMenu')
+    session.beginDialog('/mainMenu', args)
   }
 ])
 
 dialog.matches('productSearch', [
   function (session, args, next) {
-    getCustomer(session, args, connection, next)
-
-  },
-  function (session, args, next) {
-    session.beginDialog('/productSearch')
+    session.beginDialog('/productSearch', args)
   }
 ])
 
 dialog.matches('viewCart', [
-  function (session, args, next) {
-    getCustomer(session, args, connection, next)
-  },
   function (session, args) {
-    session.beginDialog('/viewCart')
+    session.beginDialog('/viewCart', args)
   }
 ])
 
 dialog.matches('checkout', [
   function (session, args, next) {
-    getCustomer(session, args, connection, next)
-  },
-  function (session, args, next) {
-    session.beginDialog('/checkout')
+    session.beginDialog('/checkout', args)
   }
 ])
 
 dialog.matches('None', [
   function (session, args, next) {
-    getCustomer(session, args, connection, next)
-  },
-  function (session, args, next) {
     session.send('I\'m sorry, I didn\'t understand..')
-    session.beginDialog('/mainMenu')
+    session.beginDialog('/mainMenu', args)
   }
 ])
 
 // Main menu
 bot.dialog('/mainMenu', [
+  function (session, args, next) {
+    getCustomer(session, args, connection, next)
+  },
   function (session, args, next) {
     const message = session.message.address.user.name ? `Hi ${session.message.address.user.name}! ` : 'Welcome to BotCommerce!'
     builder.Prompts.choice(session, message + ' What would you like to do?', ['Search for products', 'View cart', 'Checkout'])

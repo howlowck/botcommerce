@@ -1,6 +1,7 @@
 // const builder = require('botbuilder')
 const Request = require('tedious').Request
 const {ThumbnailCard, Message, CardImage} = require('botbuilder')
+const getCustomer = require('../services/getCustomer')
 
 // query SQL dbo.Customers to get user's full name
 function getCart (session, db, next) {
@@ -52,6 +53,9 @@ function displayCart (session, products, next) {
 
 module.exports = function (bot, db) {
   bot.dialog('/viewCart', [
+    (session, args, next) => {
+      getCustomer(session, args, db, next)
+    },
     (session, args, next) => {
       getCart(session, db, next)
     },

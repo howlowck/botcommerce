@@ -1,5 +1,6 @@
 const builder = require('botbuilder')
 const searchService = require('../services/searchService')
+const getCustomer = require('../services/getCustomer')
 
 const extractEntities = (session, args) => {
   var foundEntities = []
@@ -28,10 +29,14 @@ const extractEntities = (session, args) => {
   return undefined
 }
 
-module.exports = function (bot) {
+module.exports = function (bot, connection) {
   bot.dialog('/productSearch', [
     function (session, args, next) {
+      getCustomer(session, args, connection, next)
+    },
+    function (session, args, next) {
       // find LUIS entities and load into array
+      console.log('inside product search', args)
       var entities = extractEntities(session, args)
       if (entities) {
         console.log('entities: ', entities[0], entities[1])
